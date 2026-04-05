@@ -1,0 +1,49 @@
+======================================================
+  流程文件编辑器 — Electron 桌面应用打包说明
+======================================================
+
+【第一步：准备文件】
+  1. 把您的编辑器 HTML 文件重命名为 index.html
+  2. 放到本文件夹（和 build.bat 同目录）
+
+【第二步：准备图标（可选）】
+  A. 使用自定义图标：
+     - 将图标放到 build/ 文件夹
+     - Windows: icon.ico（至少 256×256）
+     - macOS:   icon.icns
+     - 通用:    icon.png（512×512）
+
+  B. 自动生成简单图标：
+     pip install Pillow
+     python generate-icon.py
+
+【第三步：安装 Node.js（只需一次）】
+  下载地址：https://nodejs.org/（选 LTS 版本）
+  安装完后重启电脑
+
+【第四步：打包】
+  Windows：双击运行 build.bat
+  macOS：  终端运行 bash build-mac.sh
+
+【第五步：分发给同事】
+  dist/ 文件夹中会生成两个文件：
+  - 流程文件编辑器 Setup x.x.x.exe  （安装版，推荐）
+  - 流程文件编辑器 x.x.x.exe         （便携版，双击直接用）
+
+======================================================
+【常见问题】
+
+Q: 打包后同事电脑打开显示空白？
+A: 确认 index.html 里的 CDN 地址可正常访问（需联网）
+
+Q: 草稿保存在哪里？
+A: 保存在本机浏览器 localStorage，换电脑需先导出 JSON
+
+Q: 如何更新内容？
+A: 替换 index.html 后重新运行 build.bat 即可
+
+Q: 打包时提示缺少图标？
+A: 运行 python generate-icon.py 自动生成，或删除
+   package.json 中 build.win.icon 相关配置
+
+======================================================
