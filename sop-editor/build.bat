@@ -1,7 +1,10 @@
 @echo off
+:: 关键修复：强制切换到 bat 文件所在的目录
+cd /d "%~dp0"
 chcp 65001 >nul
 echo ================================================
 echo   流程文件编辑器 - Electron 打包脚本
+echo   当前目录：%CD%
 echo ================================================
 echo.
 
@@ -61,5 +64,9 @@ echo   - 安装版：*Setup*.exe   （推荐，可安装到开始菜单）
 echo   - 便携版：*Portable*.exe（无需安装，直接运行）
 echo ================================================
 echo.
-explorer dist
+if exist dist (
+    explorer dist
+) else (
+    echo [提示] dist 文件夹未生成，请查看上方错误信息
+)
 pause
