@@ -32,8 +32,8 @@
   --radius-lg: 10px;
 
   --ribbon-tab-h:     30px;
-  --ribbon-body-h:    82px;
-  --ribbon-h:         112px;   /* tab-h + body-h */
+  --ribbon-body-h:    90px;
+  --ribbon-h:         120px;   /* tab-h + body-h */
   --sidebar-w:        220px;
   --status-h:         26px;
   --transition:       all 0.14s ease;
@@ -408,3 +408,104 @@ html, body {
 /* ── 自动保存动画 ────────────────────────────────────────── */
 @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
 .saving-pulse { animation: pulse 1s infinite; }
+
+/* ══════════════════════════════════════════════════════════
+   Ribbon 排版控件 (Word/Excel 风格)
+══════════════════════════════════════════════════════════ */
+
+/* 两行布局的组（字体、对齐等） */
+.rib-group.rows {
+  min-width: 0;
+}
+.rib-group.rows .rib-group-btns {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 3px;
+}
+.rib-row {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  width: 100%;
+}
+
+/* 下拉选择框（字体/字号） */
+.rib-select {
+  height: 22px;
+  background: var(--bg-card);
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: 0 4px;
+  font-size: 11px;
+  cursor: pointer;
+  outline: none;
+  transition: border-color .14s;
+}
+.rib-select:hover { border-color: var(--blue-lt); }
+.rib-select.font-family { width: 100px; }
+.rib-select.font-size   { width: 64px; }
+
+/* 小图标按钮（B I U 对齐等） */
+.rib-icon-btn {
+  width: 24px; height: 24px;
+  display: inline-flex; align-items: center; justify-content: center;
+  border: none; border-radius: 3px;
+  background: transparent;
+  color: var(--text-primary);
+  font-size: 13px;
+  cursor: pointer;
+  transition: var(--transition);
+  flex-shrink: 0;
+  padding: 0;
+  position: relative;
+}
+.rib-icon-btn:hover { background: var(--bg-hover); }
+.rib-icon-btn:active { background: rgba(37,99,235,.25); }
+.rib-icon-btn.active { background: rgba(37,99,235,.2); color: var(--blue-lt); }
+.rib-icon-btn.bold-btn { font-weight: 900; font-family: serif; }
+.rib-icon-btn.italic-btn { font-style: italic; font-family: serif; }
+.rib-icon-btn.underline-btn { text-decoration: underline; font-family: serif; }
+
+/* 颜色选取器 */
+.rib-color-wrap {
+  position: relative;
+  width: 24px; height: 24px;
+  display: inline-flex; align-items: center; justify-content: center;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: var(--transition);
+  flex-shrink: 0;
+}
+.rib-color-wrap:hover { background: var(--bg-hover); }
+.rib-color-wrap input[type=color] {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  opacity: 0; cursor: pointer;
+  border: none; padding: 0; margin: 0;
+}
+.rib-color-wrap .color-icon {
+  pointer-events: none;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 1px;
+}
+.rib-color-wrap .color-letter {
+  font-size: 11px; font-weight: 700; line-height: 1;
+  color: var(--text-primary);
+}
+.rib-color-wrap .color-bar {
+  width: 14px; height: 3px;
+  border-radius: 1px;
+}
+
+/* 竖分隔线（行内使用） */
+.rib-vsep {
+  width: 1px; height: 18px;
+  background: var(--border);
+  margin: 0 3px;
+  flex-shrink: 0;
+}
+
+/* SVG 图标按钮（对齐等） */
+.rib-icon-btn svg { pointer-events: none; }
