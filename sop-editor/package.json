@@ -35,8 +35,7 @@
           "target": "portable",
           "arch": ["x64"]
         }
-      ],
-      "icon": "build/icon.ico"
+      ]
     },
     "nsis": {
       "oneClick": false,
@@ -44,19 +43,14 @@
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
       "shortcutName": "流程文件编辑器",
-      "installerIcon": "build/icon.ico",
-      "uninstallerIcon": "build/icon.ico",
-      "installerHeaderIcon": "build/icon.ico",
       "deleteAppDataOnUninstall": false
     },
     "mac": {
       "target": "dmg",
-      "icon": "build/icon.icns",
       "category": "public.app-category.productivity"
     },
     "linux": {
-      "target": "AppImage",
-      "icon": "build/icon.png"
+      "target": "AppImage"
     }
   }
 }
