@@ -1,0 +1,45 @@
+{
+  "name": "sop-pro",
+  "version": "2.0.0",
+  "description": "流程文件专业编辑器 - 深圳市昊一源科技有限公司",
+  "main": "main.js",
+  "author": "深圳市昊一源科技有限公司",
+  "scripts": {
+    "start": "electron .",
+    "build:win": "electron-builder --win",
+    "build:mac": "electron-builder --mac"
+  },
+  "devDependencies": {
+    "electron": "^28.3.3",
+    "electron-builder": "^24.13.3"
+  },
+  "build": {
+    "appId": "com.haoyiyuan.sop-pro",
+    "productName": "流程文件编辑器",
+    "copyright": "深圳市昊一源科技有限公司",
+    "directories": { "output": "dist" },
+    "files": [
+      "main.js",
+      "preload.js",
+      "renderer/**/*",
+      "assets/**/*"
+    ],
+    "win": {
+      "target": [
+        { "target": "nsis", "arch": ["x64"] },
+        { "target": "portable", "arch": ["x64"] }
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "流程文件编辑器"
+    },
+    "mac": {
+      "target": "dmg",
+      "category": "public.app-category.productivity"
+    }
+  }
+}
