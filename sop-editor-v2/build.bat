@@ -10,11 +10,7 @@ echo.
 echo [Check] Node.js version...
 node -v
 if %ERRORLEVEL% neq 0 (
-  echo.
-  echo ERROR: Node.js not found.
-  echo Please download and install Node.js from: https://nodejs.org
-  echo After installation, restart your computer and run this script again.
-  echo.
+  echo ERROR: Node.js not found. Download from https://nodejs.org
   pause
   exit /b 1
 )
@@ -23,12 +19,19 @@ echo [Check] npm version...
 npm -v
 echo.
 
-echo [1/3] Installing dependencies...
+echo [Config] Setting mirrors (China network)...
+npm config set registry https://registry.npmmirror.com
+set ELECTRON_MIRROR=https://npmmirror.com/mirrors/electron/
+set npm_config_electron_mirror=https://npmmirror.com/mirrors/electron/
+set ELECTRON_BUILDER_BINARIES_MIRROR=https://npmmirror.com/mirrors/electron-builder-binaries/
+echo Done.
+echo.
+
+echo [1/3] Installing dependencies (may take a few minutes)...
 call npm install
 if %ERRORLEVEL% neq 0 (
   echo.
   echo ERROR: npm install failed. See error above.
-  echo.
   pause
   exit /b 1
 )
@@ -39,7 +42,6 @@ call npm run build:win
 if %ERRORLEVEL% neq 0 (
   echo.
   echo ERROR: Build failed. See error above.
-  echo.
   pause
   exit /b 1
 )
@@ -50,7 +52,7 @@ if exist dist (
   echo Installer is in the dist\ folder.
   explorer dist
 ) else (
-  echo NOTE: dist folder not found, check build output above.
+  echo NOTE: dist folder not found.
 )
 
 echo.
