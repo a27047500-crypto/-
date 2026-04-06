@@ -1,59 +1,57 @@
 @echo off
 cd /d "%~dp0"
 echo ============================================
-echo  流程文件编辑器 v2 — 构建脚本
+echo  SOP Editor v2 - Build Script
 echo ============================================
 echo.
-
-echo 当前目录: %CD%
+echo Current directory: %CD%
 echo.
 
-echo [检查] 检测 Node.js 是否安装...
+echo [Check] Node.js version...
 node -v
 if %ERRORLEVEL% neq 0 (
   echo.
-  echo *** 错误: 未检测到 Node.js ***
-  echo 请先下载安装 Node.js: https://nodejs.org
-  echo 安装完成后重新运行此脚本。
+  echo ERROR: Node.js not found.
+  echo Please download and install Node.js from: https://nodejs.org
+  echo After installation, restart your computer and run this script again.
   echo.
   pause
   exit /b 1
 )
 
-echo [检查] 检测 npm 版本...
+echo [Check] npm version...
 npm -v
 echo.
 
-echo [1/3] 安装依赖...
+echo [1/3] Installing dependencies...
 call npm install
 if %ERRORLEVEL% neq 0 (
   echo.
-  echo *** 错误: npm install 失败，请查看上方错误信息 ***
+  echo ERROR: npm install failed. See error above.
   echo.
   pause
   exit /b 1
 )
 
 echo.
-echo [2/3] 构建 Windows 安装包...
+echo [2/3] Building Windows installer...
 call npm run build:win
 if %ERRORLEVEL% neq 0 (
   echo.
-  echo *** 错误: 构建失败，请查看上方错误信息 ***
+  echo ERROR: Build failed. See error above.
   echo.
   pause
   exit /b 1
 )
 
 echo.
-echo [3/3] 构建完成！
+echo [3/3] Build complete!
 if exist dist (
-  echo 安装包位于 dist\ 目录下
+  echo Installer is in the dist\ folder.
   explorer dist
 ) else (
-  echo 注意: dist 目录未找到，请检查构建输出
+  echo NOTE: dist folder not found, check build output above.
 )
 
 echo.
-echo 按任意键退出...
 pause
