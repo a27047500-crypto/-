@@ -357,6 +357,34 @@ function toggleSidebar() {
   if (btn) btn.textContent = State.sidebarCollapsed ? '›' : '‹'
 }
 
+// ── Ribbon 标签切换 ────────────────────────────────────────────────────────
+function switchRibbonTab(tab) {
+  $$('.rib-tab').forEach(t => t.classList.toggle('active', t.dataset.rib === tab))
+  $$('.rib-panel').forEach(p => p.classList.toggle('active', p.dataset.panel === tab))
+}
+
+// ── 全局插入块（供 Ribbon 插入 tab 调用） ─────────────────────────────────
+window.addGlobalBlock = function(type) {
+  const pages = $$('.a4-page, .a4-page-landscape')
+  const lastPage = pages[pages.length - 1]
+  if (!lastPage) { toast('未找到文档页面', 'warn'); return }
+
+  if (type === 'para') {
+    const anyBlock = lastPage.querySelector('.para-block, .rich-block')
+    if (anyBlock && window.addOuterText) { window.addOuterText(anyBlock, 'after'); return }
+    toast('请在文档内某段落块上使用 ✚ 按钮插入', 'info', 4000)
+  } else if (type === 'rich') {
+    const anyBlock = lastPage.querySelector('.para-block, .rich-block')
+    if (anyBlock && window.addOuterRich) { window.addOuterRich(anyBlock, 'after'); return }
+    toast('请在文档内某段落块上使用 ✚ 按钮插入', 'info', 4000)
+  } else if (type === 'sipoc') {
+    if (window.addSipocSection) { window.addSipocSection(); return }
+    toast('请通过页面内 ✚ 按钮添加 SIPOC 步骤', 'info', 4000)
+  } else {
+    toast('请在文档内对应位置使用悬浮工具栏操作', 'info', 4000)
+  }
+}
+
 // ── 菜单动作响应 ──────────────────────────────────────────────────────────
 function handleMenuAction(action) {
   const map = {
@@ -403,6 +431,11 @@ document.addEventListener('DOMContentLoaded', () => {
   // 保存初始文档 HTML（用于新建重置）
   const wrapper = $('document-wrapper')
   if (wrapper) window._INITIAL_DOC_HTML = wrapper.innerHTML
+
+  // Ribbon 标签切换
+  $$('.rib-tab').forEach(tab => {
+    tab.addEventListener('click', () => switchRibbonTab(tab.dataset.rib))
+  })
 
   // 侧边栏标签切换
   $$('.sidebar-tab').forEach(tab => {
