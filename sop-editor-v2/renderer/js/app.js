@@ -502,7 +502,7 @@ window.appMarkDirty = markDirty
 window.appUpdateOutline = updateOutline
 
 // ══════════════════════════════════════════════════════════
-// 上下文感知系统 — 点击文档区域自动切换 Ribbon 标签
+// 活跃元素状态追踪（供浮动工具栏操作函数使用）
 // ══════════════════════════════════════════════════════════
 ;(function setupContextDetection() {
   // 当前活跃元素引用
@@ -513,23 +513,9 @@ window.appUpdateOutline = updateOutline
   window._activeBlock  = null   // para-block / rich-block
 
   function showCtxTab(type) {
-    // 隐藏所有上下文标签和面板
-    document.querySelectorAll('.ctx-tab').forEach(el => {
-      el.classList.remove('visible', 'active')
-      el.style.display = ''
-    })
-    // 如果激活了某个上下文，显示对应标签
-    if (type) {
-      const sep  = document.querySelector('.rib-ctx-sep')
-      const tab  = document.querySelector(`.rib-tab.ctx-${type}`)
-      const panel = document.querySelector(`.ctx-${type}-panel`)
-      if (sep) { sep.style.display = 'block'; sep.classList.add('visible') }
-      if (tab) { tab.classList.add('visible'); tab.style.display = '' }
-      // 自动切换到该上下文面板
-      switchRibbonTab(tab ? tab.dataset.rib : '')
-    } else {
-      // 没有上下文 → 回到开始标签
-      switchRibbonTab('home')
+    // 上下文标签已移除，此函数仅保留兼容性
+    if (!type) {
+      // 无上下文，不切换标签
     }
   }
 

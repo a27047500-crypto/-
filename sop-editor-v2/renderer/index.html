@@ -397,21 +397,217 @@ body { background: transparent; overflow: hidden; }
   background: var(--bg-canvas, #f1f5f9);
 }
 
-/* 隐藏所有文档内悬浮工具条 — 功能已全部移入 Ribbon */
+/* ── 悬浮工具条统一基础样式 ── */
 .block-toolbar,
-.sipoc-action-bar,
-.rich-toolbar,
 .table-controls,
-#rt-toolbar,
-.delete-btn-wrapper { display: none !important; }
+.sipoc-action-bar,
+.rich-toolbar {
+  font-family: -apple-system, "Segoe UI", "Microsoft YaHei", sans-serif !important;
+  font-size: 11px !important;
+}
 
-/* 保留图片拖拽手柄（图片工具 Ribbon 标签提供精确控制） */
-.resize-handle, .rotate-handle, .move-handle, .delete-handle { display: none !important; }
+/* ── 段落块 / 富文本块工具条 ── */
+.block-toolbar {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s ease;
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 8px !important;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.12) !important;
+  padding: 4px 6px !important;
+  gap: 2px !important;
+  display: flex !important;
+  align-items: center !important;
+}
+.group\/para:hover .block-toolbar,
+.group\/matrix:hover .block-toolbar,
+.group\/rb:hover .block-toolbar {
+  opacity: 1 !important;
+  pointer-events: auto !important;
+}
+.block-toolbar > span {
+  font-size: 10px !important;
+  color: #94a3b8 !important;
+  padding: 0 4px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.02em !important;
+}
+.block-toolbar button,
+.toolbar-btn {
+  font-size: 11px !important;
+  padding: 3px 8px !important;
+  border-radius: 5px !important;
+  border: none !important;
+  background: transparent !important;
+  color: #475569 !important;
+  cursor: pointer !important;
+  font-weight: 500 !important;
+  white-space: nowrap !important;
+  transition: background 0.12s, color 0.12s !important;
+  line-height: 1.5 !important;
+}
+.block-toolbar button:hover,
+.toolbar-btn:hover {
+  background: #f1f5f9 !important;
+  color: #1e40af !important;
+}
+.block-toolbar button.danger,
+.toolbar-btn.danger {
+  color: #ef4444 !important;
+}
+.block-toolbar button.danger:hover,
+.toolbar-btn.danger:hover {
+  background: #fef2f2 !important;
+  color: #dc2626 !important;
+}
+.block-toolbar button.text-blue-600,
+.toolbar-btn.text-blue-600 { color: #2563eb !important; }
+.block-toolbar button.text-emerald-600,
+.toolbar-btn.text-emerald-600 { color: #059669 !important; }
+.block-toolbar button.text-indigo-600,
+.toolbar-btn.text-indigo-600 { color: #4f46e5 !important; }
+.toolbar-divider {
+  width: 1px !important;
+  height: 16px !important;
+  background: #e2e8f0 !important;
+  margin: 0 3px !important;
+  flex-shrink: 0 !important;
+}
 
-/* 防止 #main 自身出现两层滚动条 */
+/* ── 表格操作工具条 ── */
+.table-controls {
+  opacity: 0 !important;
+  pointer-events: none !important;
+  transition: opacity 0.15s ease !important;
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 8px !important;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.12) !important;
+  padding: 4px 8px !important;
+  gap: 2px !important;
+  display: flex !important;
+  align-items: center !important;
+  flex-wrap: wrap !important;
+  margin-top: 6px !important;
+}
+.group\/table:hover .table-controls {
+  opacity: 1 !important;
+  pointer-events: auto !important;
+}
+.table-controls > span {
+  font-size: 10px !important;
+  color: #94a3b8 !important;
+  padding: 0 4px !important;
+  font-weight: 600 !important;
+}
+.table-controls button {
+  font-size: 11px !important;
+  padding: 3px 8px !important;
+  border-radius: 5px !important;
+  border: none !important;
+  background: transparent !important;
+  color: #475569 !important;
+  cursor: pointer !important;
+  font-weight: 500 !important;
+  white-space: nowrap !important;
+  transition: background 0.12s !important;
+  line-height: 1.6 !important;
+}
+.table-controls button:hover { background: #f1f5f9 !important; color: #1e40af !important; }
+.table-controls button.text-red-500 { color: #ef4444 !important; }
+.table-controls button.text-red-500:hover { background: #fef2f2 !important; }
+.table-controls button.text-blue-700 { color: #1d4ed8 !important; }
+.table-controls button.text-orange-700 { color: #c2410c !important; }
+.tc-divider {
+  width: 1px !important; height: 16px !important;
+  background: #e2e8f0 !important; margin: 0 3px !important; flex-shrink: 0 !important;
+}
+
+/* ── SIPOC 步骤工具条 ── */
+.sipoc-action-bar {
+  opacity: 0 !important;
+  pointer-events: none !important;
+  transition: opacity 0.15s ease !important;
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 8px !important;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.10) !important;
+  padding: 4px 8px !important;
+  gap: 4px !important;
+  display: flex !important;
+  align-items: center !important;
+  margin-top: 4px !important;
+}
+.sipoc-step:hover .sipoc-action-bar {
+  opacity: 1 !important;
+  pointer-events: auto !important;
+}
+.sipoc-action-bar button {
+  font-size: 11px !important;
+  padding: 3px 10px !important;
+  border-radius: 5px !important;
+  border: none !important;
+  background: transparent !important;
+  color: #475569 !important;
+  cursor: pointer !important;
+  font-weight: 500 !important;
+  transition: background 0.12s !important;
+}
+.sipoc-action-bar button:hover { background: #f1f5f9 !important; color: #1e40af !important; }
+
+/* ── 富文本块内工具条（插入表格/图片）── */
+.rich-toolbar {
+  display: flex !important;
+  gap: 4px !important;
+  margin-top: 6px !important;
+  flex-wrap: wrap !important;
+  padding: 4px 6px !important;
+  background: #f8fafc !important;
+  border: 1px dashed #cbd5e1 !important;
+  border-radius: 6px !important;
+}
+.rich-toolbar button {
+  font-size: 11px !important;
+  padding: 4px 10px !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 5px !important;
+  background: white !important;
+  color: #475569 !important;
+  cursor: pointer !important;
+  font-weight: 500 !important;
+  transition: background 0.12s, border-color 0.12s !important;
+}
+.rich-toolbar button:hover {
+  background: #eff6ff !important;
+  border-color: #93c5fd !important;
+  color: #1d4ed8 !important;
+}
+
+/* ── 行/列删除按钮（表格内悬浮）── */
+.delete-btn-wrapper {
+  user-select: none;
+  pointer-events: none;
+}
+.delete-btn-wrapper button { pointer-events: auto; }
+
+/* ── 图片拖拽手柄恢复 ── */
+.move-handle, .resize-handle, .rotate-handle, .delete-handle {
+  display: flex !important;
+}
+.move-handle, .delete-handle, .rotate-handle, .resize-handle {
+  background: white !important;
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.12) !important;
+  transition: all 0.12s ease !important;
+}
+.delete-handle:hover { background: #ef4444 !important; color: white !important; border-color: #ef4444 !important; }
+.move-handle:hover, .rotate-handle:hover { background: #eff6ff !important; color: #2563eb !important; border-color: #93c5fd !important; }
+
+/* ── 防止 #main 双重滚动条 ── */
 #main { overflow: hidden auto !important; }
 
-/* document-wrapper 背景 */
+/* ── document-wrapper 背景 ── */
 #document-wrapper { min-height: 100%; padding: 32px 0; background: #e0e0e0; }
 </style>
 </head>
@@ -452,10 +648,6 @@ body { background: transparent; overflow: hidden; }
       <div class="rib-tab" data-rib="page">页面</div>
       <div class="rib-tab" data-rib="review">审阅</div>
       <div class="rib-tab" data-rib="export">导出</div>
-      <div class="rib-ctx-sep ctx-tab" style="display:none"></div>
-      <div class="rib-tab ctx-tab ctx-table" data-rib="table-tool">🟠 表格工具</div>
-      <div class="rib-tab ctx-tab ctx-sipoc" data-rib="sipoc-tool">🟣 SIPOC工具</div>
-      <div class="rib-tab ctx-tab ctx-image" data-rib="image-tool">🟢 图片工具</div>
     </div>
 
     <!-- 功能区 -->
@@ -766,8 +958,9 @@ body { background: transparent; overflow: hidden; }
         </div>
       </div>
 
+      <!-- contextual panels removed — functions handled by floating toolbars -->
       <!-- ▌表格工具（上下文）▌ -->
-      <div class="rib-panel ctx-table-panel" data-panel="table-tool">
+      <div class="rib-panel ctx-table-panel" data-panel="table-tool" style="display:none!important">
         <div class="rib-group">
           <div class="rib-group-btns">
             <button class="rib-btn" onclick="window.appTableOp('addRowAbove')">
@@ -838,7 +1031,7 @@ body { background: transparent; overflow: hidden; }
       </div>
 
       <!-- ▌SIPOC工具（上下文）▌ -->
-      <div class="rib-panel ctx-sipoc-panel" data-panel="sipoc-tool">
+      <div class="rib-panel ctx-sipoc-panel" data-panel="sipoc-tool" style="display:none!important">
         <div class="rib-group">
           <div class="rib-group-btns">
             <button class="rib-btn" onclick="window.appSipocOp('insertBefore')">
@@ -859,7 +1052,7 @@ body { background: transparent; overflow: hidden; }
       </div>
 
       <!-- ▌图片工具（上下文）▌ -->
-      <div class="rib-panel ctx-image-panel" data-panel="image-tool">
+      <div class="rib-panel ctx-image-panel" data-panel="image-tool" style="display:none!important">
         <div class="rib-group rows">
           <div class="rib-group-btns">
             <div class="rib-input-row">
