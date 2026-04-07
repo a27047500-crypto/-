@@ -448,13 +448,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // 工具栏按钮
   const binds = {
-    'btn-new':      doNew,
-    'btn-open':     doOpen,
-    'btn-save':     doSave,
-    'btn-save-as':  doSaveAs,
-    'btn-pdf':      doExportPDF,
-    'btn-json':     doExportJSON,
-    'btn-html':     doExportHTML,
+    'btn-new':       doNew,
+    'btn-open':      doOpen,
+    'btn-save':      doSave,      // QAT 保存按钮
+    'btn-save-main': doSave,      // 文件 tab 保存按钮
+    'btn-save-as':   doSaveAs,
+    'btn-pdf':       doExportPDF,
+    'btn-json':      doExportJSON,
+    'btn-html':      doExportHTML,
   }
   Object.entries(binds).forEach(([id, fn]) => {
     const el = $(id)
@@ -499,3 +500,226 @@ function highlightCurrentOutlineItem() {
 window.appShowToast = toast
 window.appMarkDirty = markDirty
 window.appUpdateOutline = updateOutline
+
+// ══════════════════════════════════════════════════════════
+// 上下文感知系统 — 点击文档区域自动切换 Ribbon 标签
+// ══════════════════════════════════════════════════════════
+;(function setupContextDetection() {
+  // 当前活跃元素引用
+  window._activeTable  = null   // editable-table-wrapper 或 matrix-wrapper
+  window._activeTableUid = null
+  window._activeSipoc  = null   // sipoc-step
+  window._activeImage  = null   // transform-wrapper
+  window._activeBlock  = null   // para-block / rich-block
+
+  function showCtxTab(type) {
+    // 隐藏所有上下文标签和面板
+    document.querySelectorAll('.ctx-tab').forEach(el => {
+      el.classList.remove('visible', 'active')
+      el.style.display = ''
+    })
+    // 如果激活了某个上下文，显示对应标签
+    if (type) {
+      const sep  = document.querySelector('.rib-ctx-sep')
+      const tab  = document.querySelector(`.rib-tab.ctx-${type}`)
+      const panel = document.querySelector(`.ctx-${type}-panel`)
+      if (sep) { sep.style.display = 'block'; sep.classList.add('visible') }
+      if (tab) { tab.classList.add('visible'); tab.style.display = '' }
+      // 自动切换到该上下文面板
+      switchRibbonTab(tab ? tab.dataset.rib : '')
+    } else {
+      // 没有上下文 → 回到开始标签
+      switchRibbonTab('home')
+    }
+  }
+
+  document.addEventListener('click', function(e) {
+    const wrapper = document.getElementById('document-wrapper')
+    if (!wrapper || !wrapper.contains(e.target)) return
+
+    // 检测：图片
+    const tw = e.target.closest('.transform-wrapper')
+    if (tw) {
+      window._activeImage = tw
+      const img = tw.querySelector('img')
+      if (img) {
+        const s = tw.style
+        document.getElementById('img-w')  && (document.getElementById('img-w').value   = Math.round(parseFloat(s.width)  || img.offsetWidth))
+        document.getElementById('img-h')  && (document.getElementById('img-h').value   = Math.round(parseFloat(s.height) || img.offsetHeight))
+        const m = (s.transform || '').match(/rotate\(([^)]+)deg\)/)
+        document.getElementById('img-rot') && (document.getElementById('img-rot').value = m ? m[1] : 0)
+      }
+      showCtxTab('image'); return
+    }
+
+    // 检测：可编辑表格
+    const etw = e.target.closest('.editable-table-wrapper')
+    if (etw) {
+      window._activeTable = etw
+      window._activeTableUid = etw.getAttribute('data-uid')
+      // 读取当前行/列尺寸
+      const td = e.target.closest('td, th')
+      const tr = e.target.closest('tr')
+      if (tr) document.getElementById('tbl-row-h') && (document.getElementById('tbl-row-h').value = tr.offsetHeight)
+      if (td) document.getElementById('tbl-col-w') && (document.getElementById('tbl-col-w').value = td.offsetWidth)
+      showCtxTab('table'); return
+    }
+
+    // 检测：矩阵表格
+    const mw = e.target.closest('.matrix-wrapper')
+    if (mw) {
+      window._activeTable = mw
+      window._activeTableUid = null
+      const td = e.target.closest('td, th')
+      const tr = e.target.closest('tr')
+      if (tr) document.getElementById('tbl-row-h') && (document.getElementById('tbl-row-h').value = tr.offsetHeight)
+      if (td) document.getElementById('tbl-col-w') && (document.getElementById('tbl-col-w').value = td.offsetWidth)
+      showCtxTab('table'); return
+    }
+
+    // 检测：SIPOC 步骤
+    const ss = e.target.closest('.sipoc-step')
+    if (ss) {
+      window._activeSipoc = ss
+      showCtxTab('sipoc'); return
+    }
+
+    // 检测：段落块
+    const pb = e.target.closest('.para-block, .rich-block')
+    if (pb) { window._activeBlock = pb }
+
+    // 普通内容区 → 无上下文
+    showCtxTab(null)
+  }, true)
+})()
+
+// ══════════════════════════════════════════════════════════
+// 表格操作（Ribbon 表格工具调用）
+// ══════════════════════════════════════════════════════════
+window.appTableOp = function(op, val) {
+  const uid = window._activeTableUid
+  const tbl = window._activeTable
+  if (!tbl) { toast('请先点击要操作的表格', 'warn'); return }
+
+  if (uid) {
+    // editable-table-wrapper 使用原始编辑器函数
+    const fnMap = {
+      addRowAbove: () => window.rtAddRowBefore && window.rtAddRowBefore(uid),
+      addRowBelow: () => window.rtAddRow      && window.rtAddRow(uid),
+      delRow:      () => window.rtDelRow      && window.rtDelRow(uid),
+      addColLeft:  () => window.rtAddColBefore && window.rtAddColBefore(uid),
+      addColRight: () => window.rtAddCol      && window.rtAddCol(uid),
+      delCol:      () => window.rtDelCol      && window.rtDelCol(uid),
+      merge:       () => window.rtMergeSelectedCells && window.rtMergeSelectedCells(uid),
+      split:       () => window.rtUnmergeCell && window.rtUnmergeCell(uid),
+    }
+    if (fnMap[op]) { fnMap[op](); return }
+  }
+
+  // 行高/列宽（适用于所有表格）
+  if (op === 'setRowHeight') {
+    const px = parseInt(val)
+    if (!px || px < 10) return
+    // 找当前选中行
+    const sel = window.getSelection()
+    const tr  = sel && sel.anchorNode ? sel.anchorNode.parentElement?.closest('tr') : null
+    const target = tr || tbl.querySelector('tbody tr') || tbl.querySelector('tr')
+    if (target) { target.style.height = px + 'px'; target.style.minHeight = px + 'px' }
+    toast('行高已设置', 'success')
+    return
+  }
+  if (op === 'setColWidth') {
+    const px = parseInt(val)
+    if (!px || px < 10) return
+    const sel = window.getSelection()
+    const td  = sel && sel.anchorNode ? sel.anchorNode.parentElement?.closest('td,th') : null
+    if (td) {
+      const colIdx = Array.from(td.parentElement.children).indexOf(td)
+      tbl.querySelectorAll('tr').forEach(row => {
+        const cell = row.children[colIdx]
+        if (cell) { cell.style.width = px + 'px'; cell.style.minWidth = px + 'px' }
+      })
+      toast('列宽已设置', 'success')
+    }
+    return
+  }
+
+  // matrix-wrapper 行列操作（fallback）
+  const btn = tbl.querySelector('.block-toolbar button')
+  toast('请使用表格内工具栏操作矩阵表格行列', 'info')
+}
+
+// ══════════════════════════════════════════════════════════
+// SIPOC 操作
+// ══════════════════════════════════════════════════════════
+window.appSipocOp = function(op) {
+  const step = window._activeSipoc
+  if (!step) { toast('请先点击要操作的 SIPOC 步骤', 'warn'); return }
+  const bar = step.querySelector('.sipoc-action-bar')
+  if (op === 'insertBefore') {
+    const btn = bar && bar.querySelector('button[onclick*="before"], button[title*="上"]')
+    if (btn) btn.click()
+    else if (window.insertSipocStepBefore) window.insertSipocStepBefore(step)
+    else toast('未找到插入函数', 'warn')
+  } else if (op === 'insertAfter') {
+    const btn = bar && bar.querySelector('button[onclick*="after"], button[title*="下"]')
+    if (btn) btn.click()
+    else if (window.insertSipocStepAfter) window.insertSipocStepAfter(step)
+    else toast('未找到插入函数', 'warn')
+  } else if (op === 'delete') {
+    const btn = bar && bar.querySelector('button[onclick*="remove"], button[title*="删"]')
+    if (btn) btn.click()
+    else if (window.undoableRemove) window.undoableRemove(step, '.sipoc-step')
+  }
+}
+
+// ══════════════════════════════════════════════════════════
+// 图片操作
+// ══════════════════════════════════════════════════════════
+window.appImageOp = function(prop, val) {
+  const tw = window._activeImage
+  if (!tw) { toast('请先点击要操作的图片', 'warn'); return }
+  if (prop === 'width')  { tw.style.width  = parseInt(val) + 'px' }
+  if (prop === 'height') { tw.style.height = parseInt(val) + 'px' }
+  if (prop === 'rotate') {
+    const cur = tw.style.transform || ''
+    const base = cur.replace(/rotate\([^)]+\)/g, '').trim()
+    tw.style.transform = (base + ' rotate(' + parseInt(val) + 'deg)').trim()
+  }
+  if (prop === 'delete') {
+    if (window.deleteFlowchart) window.deleteFlowchart({ target: tw })
+    else tw.remove()
+    window._activeImage = null
+    showCtxTab(null)
+  }
+}
+
+// ══════════════════════════════════════════════════════════
+// 插入块（Ribbon 插入 tab）
+// ══════════════════════════════════════════════════════════
+window.appInsertBlock = function(type) {
+  const pages = document.querySelectorAll('.a4-page, .a4-page-landscape')
+  const last  = pages[pages.length - 1]
+  if (!last) { toast('未找到文档页面', 'warn'); return }
+  const ref = window._activeBlock || last.querySelector('.para-block, .rich-block')
+
+  if (type === 'para' && ref && window.addOuterText) { window.addOuterText(ref, 'after'); return }
+  if (type === 'rich' && ref && window.addOuterRich) { window.addOuterRich(ref, 'after'); return }
+  if (type === 'sipoc' && window.addSipocSection)    { window.addSipocSection(); return }
+  if (type === 'editable-table' && ref && window.insertRichTable) {
+    // 在富文本块里插入表格
+    const rich = ref.classList.contains('rich-block') ? ref : last.querySelector('.rich-block')
+    if (rich && window.insertRichTable) { window.insertRichTable(rich); return }
+  }
+  toast('请在文档内点击一个段落块，再使用插入功能', 'info', 4000)
+}
+
+// ══════════════════════════════════════════════════════════
+// 页眉页脚
+// ══════════════════════════════════════════════════════════
+window.appSetPageHeader = function(text) {
+  document.querySelectorAll('.page-header').forEach(h => { h.textContent = text })
+}
+window.appSetPageFooter = function(text) {
+  document.querySelectorAll('.page-footer').forEach(f => { f.textContent = text })
+}

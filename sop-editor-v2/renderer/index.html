@@ -397,8 +397,22 @@ body { background: transparent; overflow: hidden; }
   background: var(--bg-canvas, #f1f5f9);
 }
 
+/* 隐藏所有文档内悬浮工具条 — 功能已全部移入 Ribbon */
+.block-toolbar,
+.sipoc-action-bar,
+.rich-toolbar,
+.table-controls,
+#rt-toolbar,
+.delete-btn-wrapper { display: none !important; }
+
+/* 保留图片拖拽手柄（图片工具 Ribbon 标签提供精确控制） */
+.resize-handle, .rotate-handle, .move-handle, .delete-handle { display: none !important; }
+
 /* 防止 #main 自身出现两层滚动条 */
 #main { overflow: hidden auto !important; }
+
+/* document-wrapper 背景 */
+#document-wrapper { min-height: 100%; padding: 32px 0; background: #e0e0e0; }
 </style>
 </head>
 <body>
@@ -408,124 +422,93 @@ body { background: transparent; overflow: hidden; }
 ═══════════════════════════════════════════════════ -->
 <div id="app">
 
-  <!-- ══════════════════════════════════════════════════
-       RIBBON 功能区（Office 风格）
-  ══════════════════════════════════════════════════ -->
+  <!-- ══ RIBBON ══ -->
   <div id="ribbon">
 
-    <!-- ── 标签行 ─────────────────────────────────────── -->
-    <div id="ribbon-tabs">
-      <!-- Logo -->
-      <div class="rib-logo">
-        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414A1 1 0 0119 9.414V19a2 2 0 01-2 2z"/>
-        </svg>
-        <span>流程文件编辑器</span>
-      </div>
-      <!-- 标签页 -->
-      <div class="rib-tab active" data-rib="file">文件</div>
-      <div class="rib-tab" data-rib="home">开始</div>
-      <div class="rib-tab" data-rib="insert">插入</div>
-      <div class="rib-tab" data-rib="export">导出</div>
-      <!-- 居中标题 -->
-      <div class="rib-title">深圳市昊一源科技有限公司</div>
-      <!-- 右侧文件名 -->
-      <div class="rib-fname-wrap">
-        <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="flex-shrink:0;opacity:.5">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414A1 1 0 0119 9.414V19a2 2 0 01-2 2z"/>
-        </svg>
-        <span class="fname" id="toolbar-fname">未命名文档</span>
-        <span class="save-dot saved" id="toolbar-save-dot" title="已保存"></span>
+    <!-- QAT -->
+    <div id="qat">
+      <button class="qat-btn" id="btn-save" title="保存 Ctrl+S">
+        <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/></svg>
+      </button>
+      <button class="qat-btn" id="btn-undo" title="撤销 Ctrl+Z" onclick="window.undo&&window.undo()" disabled>
+        <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6M3 10l6-6"/></svg>
+      </button>
+      <button class="qat-btn" id="btn-redo" title="重做 Ctrl+Y" onclick="window.redo&&window.redo()" disabled>
+        <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 10H11a8 8 0 00-8 8v2M21 10l-6 6M21 10l-6-6"/></svg>
+      </button>
+      <div class="qat-sep"></div>
+      <div class="qat-title">深圳市昊一源科技有限公司 — 流程文件编辑器</div>
+      <div class="qat-fname">
+        <span id="toolbar-fname">未命名文档</span>
+        <span class="save-dot saved" id="toolbar-save-dot"></span>
       </div>
     </div>
 
-    <!-- ── 功能区内容 ──────────────────────────────────── -->
+    <!-- 标签行 -->
+    <div id="ribbon-tabs">
+      <div class="rib-tab active" data-rib="file">文件</div>
+      <div class="rib-tab" data-rib="home">开始</div>
+      <div class="rib-tab" data-rib="insert">插入</div>
+      <div class="rib-tab" data-rib="page">页面</div>
+      <div class="rib-tab" data-rib="review">审阅</div>
+      <div class="rib-tab" data-rib="export">导出</div>
+      <div class="rib-ctx-sep ctx-tab" style="display:none"></div>
+      <div class="rib-tab ctx-tab ctx-table" data-rib="table-tool">🟠 表格工具</div>
+      <div class="rib-tab ctx-tab ctx-sipoc" data-rib="sipoc-tool">🟣 SIPOC工具</div>
+      <div class="rib-tab ctx-tab ctx-image" data-rib="image-tool">🟢 图片工具</div>
+    </div>
+
+    <!-- 功能区 -->
     <div id="ribbon-body">
 
-      <!-- ▌文件 tab ▌ -->
+      <!-- ▌文件▌ -->
       <div class="rib-panel active" data-panel="file">
-        <!-- 新建 -->
         <div class="rib-group">
           <div class="rib-group-btns">
-            <button id="btn-new" class="rib-btn" title="新建文档 (Ctrl+N)">
-              <svg width="22" height="22" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                  d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414A1 1 0 0119 9.414V19a2 2 0 01-2 2z"/>
-              </svg>
+            <button id="btn-new" class="rib-btn" title="新建 Ctrl+N">
+              <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414A1 1 0 0119 9.414V19a2 2 0 01-2 2z"/></svg>
               新建
             </button>
-          </div>
-          <div class="rib-group-label">新建</div>
-        </div>
-        <div class="rib-sep"></div>
-        <!-- 打开 / 保存 -->
-        <div class="rib-group">
-          <div class="rib-group-btns">
-            <button id="btn-open" class="rib-btn" title="打开文档 (Ctrl+O)">
-              <svg width="22" height="22" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                  d="M5 19a2 2 0 01-2-2V7a2 2 0 012-2h4l2 2h4a2 2 0 012 2v1M5 19h14a2 2 0 002-2v-5a2 2 0 00-2-2H9a2 2 0 00-2 2v5a2 2 0 01-2 2z"/>
-              </svg>
+            <button id="btn-open" class="rib-btn" title="打开 Ctrl+O">
+              <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 19a2 2 0 01-2-2V7a2 2 0 012-2h4l2 2h4a2 2 0 012 2v1M5 19h14a2 2 0 002-2v-5a2 2 0 00-2-2H9a2 2 0 00-2 2v5a2 2 0 01-2 2z"/></svg>
               打开
             </button>
-            <button id="btn-save" class="rib-btn save-btn" title="保存 (Ctrl+S)">
-              <svg width="22" height="22" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                  d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/>
-              </svg>
+            <button id="btn-save-main" class="rib-btn primary" title="保存 Ctrl+S">
+              <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/></svg>
               保存
             </button>
           </div>
           <div class="rib-group-label">文件</div>
         </div>
         <div class="rib-sep"></div>
-        <!-- 另存为 -->
-        <div class="rib-group">
+        <div class="rib-group rows">
           <div class="rib-group-btns">
             <div class="rib-sm-col">
-              <button id="btn-save-as" class="rib-btn-sm" title="另存为 (Ctrl+Shift+S)">
-                <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M17 3H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2V7l-4-4zm-5 16a3 3 0 110-6 3 3 0 010 6zm3-10H5V5h10v4z"/>
-                </svg>
+              <button id="btn-save-as" class="rib-btn-sm" title="另存为 Ctrl+Shift+S">
+                <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 3H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2V7l-4-4z"/></svg>
                 另存为…
+              </button>
+              <button class="rib-btn-sm" onclick="window.saveDraft&&window.saveDraft()">
+                <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/></svg>
+                暂存草稿
+              </button>
+              <button class="rib-btn-sm" onclick="window.openDraftModal&&window.openDraftModal()">
+                <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8"/></svg>
+                草稿箱
               </button>
             </div>
           </div>
-          <div class="rib-group-label">另存</div>
+          <div class="rib-group-label">草稿</div>
         </div>
       </div>
 
-      <!-- ▌开始 tab ▌ -->
+      <!-- ▌开始▌ -->
       <div class="rib-panel" data-panel="home">
-
-        <!-- 撤销/重做 -->
-        <div class="rib-group">
-          <div class="rib-group-btns">
-            <button id="btn-undo" class="rib-btn" title="撤销 (Ctrl+Z)" onclick="window.undo&&window.undo()" disabled>
-              <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 10h10a8 8 0 018 8v2M3 10l6 6M3 10l6-6"/>
-              </svg>撤销
-            </button>
-            <button id="btn-redo" class="rib-btn" title="重做 (Ctrl+Y)" onclick="window.redo&&window.redo()" disabled>
-              <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 10H11a8 8 0 00-8 8v2M21 10l-6 6M21 10l-6-6"/>
-              </svg>重做
-            </button>
-          </div>
-          <div class="rib-group-label">历史</div>
-        </div>
-        <div class="rib-sep"></div>
-
         <!-- 字体 -->
         <div class="rib-group rows">
           <div class="rib-group-btns">
-            <!-- 行1：字体 + 字号 -->
             <div class="rib-row">
-              <select class="rib-select font-family" title="字体"
-                onchange="window.formatText&&window.formatText('fontName',this.value)">
+              <select class="rib-select font-family" title="字体" onchange="window.formatText&&window.formatText('fontName',this.value)">
                 <option value="SimSun">宋体</option>
                 <option value="SimHei">黑体</option>
                 <option value="Microsoft YaHei">微软雅黑</option>
@@ -534,8 +517,7 @@ body { background: transparent; overflow: hidden; }
                 <option value="Arial">Arial</option>
                 <option value="Times New Roman">Times New Roman</option>
               </select>
-              <select class="rib-select font-size" title="字号"
-                onchange="window.formatText&&window.formatText('fontSize',this.value)">
+              <select class="rib-select font-size" title="字号" onchange="window.formatText&&window.formatText('fontSize',this.value)">
                 <option value="1">六号 8pt</option>
                 <option value="2">五号 10.5pt</option>
                 <option value="3" selected>小四 12pt</option>
@@ -545,172 +527,71 @@ body { background: transparent; overflow: hidden; }
                 <option value="7">初号 42pt</option>
               </select>
             </div>
-            <!-- 行2：B I U + 颜色 -->
             <div class="rib-row">
-              <button class="rib-icon-btn bold-btn" title="加粗 (Ctrl+B)"
-                onmousedown="event.preventDefault();window.formatText&&window.formatText('bold')">B</button>
-              <button class="rib-icon-btn italic-btn" title="斜体 (Ctrl+I)"
-                onmousedown="event.preventDefault();window.formatText&&window.formatText('italic')">I</button>
-              <button class="rib-icon-btn underline-btn" title="下划线 (Ctrl+U)"
-                onmousedown="event.preventDefault();window.formatText&&window.formatText('underline')">U</button>
+              <button class="rib-icon-btn bold-btn" title="加粗 Ctrl+B" onmousedown="event.preventDefault();window.formatText&&window.formatText('bold')">B</button>
+              <button class="rib-icon-btn italic-btn" title="斜体 Ctrl+I" onmousedown="event.preventDefault();window.formatText&&window.formatText('italic')">I</button>
+              <button class="rib-icon-btn underline-btn" title="下划线 Ctrl+U" onmousedown="event.preventDefault();window.formatText&&window.formatText('underline')">U</button>
               <div class="rib-vsep"></div>
-              <!-- 字体颜色 -->
               <div class="rib-color-wrap" title="字体颜色">
-                <input type="color" value="#000000"
-                  oninput="window.formatText&&window.formatText('foreColor',this.value);document.getElementById('font-color-bar').style.background=this.value">
-                <div class="color-icon">
-                  <span class="color-letter" style="color:var(--text-primary)">A</span>
-                  <span class="color-bar" id="font-color-bar" style="background:#ef4444"></span>
-                </div>
+                <input type="color" value="#000000" oninput="window.formatText&&window.formatText('foreColor',this.value);document.getElementById('fcbar').style.background=this.value">
+                <div class="color-icon"><span class="color-letter">A</span><span class="color-bar" id="fcbar" style="background:#ef4444"></span></div>
               </div>
-              <!-- 高亮色 -->
               <div class="rib-color-wrap" title="文字高亮">
-                <input type="color" value="#fef08a"
-                  oninput="window.formatText&&window.formatText('hiliteColor',this.value);document.getElementById('highlight-bar').style.background=this.value">
-                <div class="color-icon">
-                  <span class="color-letter" style="font-size:10px">✎</span>
-                  <span class="color-bar" id="highlight-bar" style="background:#fef08a"></span>
-                </div>
+                <input type="color" value="#fef08a" oninput="window.formatText&&window.formatText('hiliteColor',this.value);document.getElementById('hlbar').style.background=this.value">
+                <div class="color-icon"><span class="color-letter" style="font-size:10px">✎</span><span class="color-bar" id="hlbar" style="background:#fef08a"></span></div>
               </div>
               <div class="rib-vsep"></div>
-              <!-- 快速颜色 -->
-              <button class="rib-icon-btn" style="width:18px;height:18px;background:#ef4444;border-radius:3px" title="红色"
-                onmousedown="event.preventDefault();window.formatText&&window.formatText('foreColor','#ef4444')"></button>
-              <button class="rib-icon-btn" style="width:18px;height:18px;background:#3b82f6;border-radius:3px" title="蓝色"
-                onmousedown="event.preventDefault();window.formatText&&window.formatText('foreColor','#3b82f6')"></button>
-              <button class="rib-icon-btn" style="width:18px;height:18px;background:#16a34a;border-radius:3px" title="绿色"
-                onmousedown="event.preventDefault();window.formatText&&window.formatText('foreColor','#16a34a')"></button>
-              <button class="rib-icon-btn" style="width:18px;height:18px;background:#000000;border-radius:3px;border:1px solid #555" title="恢复黑色"
-                onmousedown="event.preventDefault();window.formatText&&window.formatText('foreColor','#000000')"></button>
+              <button class="rib-icon-btn" style="width:16px;height:16px;background:#ef4444;border-radius:2px" title="红色" onmousedown="event.preventDefault();window.formatText&&window.formatText('foreColor','#ef4444')"></button>
+              <button class="rib-icon-btn" style="width:16px;height:16px;background:#2563eb;border-radius:2px" title="蓝色" onmousedown="event.preventDefault();window.formatText&&window.formatText('foreColor','#2563eb')"></button>
+              <button class="rib-icon-btn" style="width:16px;height:16px;background:#16a34a;border-radius:2px" title="绿色" onmousedown="event.preventDefault();window.formatText&&window.formatText('foreColor','#16a34a')"></button>
+              <button class="rib-icon-btn" style="width:16px;height:16px;background:#000;border-radius:2px;border:1px solid #ccc" title="黑色" onmousedown="event.preventDefault();window.formatText&&window.formatText('foreColor','#000000')"></button>
             </div>
           </div>
           <div class="rib-group-label">字体</div>
         </div>
         <div class="rib-sep"></div>
-
         <!-- 对齐 -->
         <div class="rib-group rows">
           <div class="rib-group-btns">
-            <!-- 行1：水平对齐 -->
             <div class="rib-row">
-              <button class="rib-icon-btn" title="左对齐"
-                onmousedown="event.preventDefault();window.formatText&&window.formatText('justifyLeft')">
-                <svg width="15" height="15" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M3 5h18v2H3zm0 4h12v2H3zm0 4h18v2H3zm0 4h12v2H3z"/>
-                </svg>
-              </button>
-              <button class="rib-icon-btn" title="居中"
-                onmousedown="event.preventDefault();window.formatText&&window.formatText('justifyCenter')">
-                <svg width="15" height="15" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M3 5h18v2H3zm3 4h12v2H6zm-3 4h18v2H3zm3 4h12v2H6z"/>
-                </svg>
-              </button>
-              <button class="rib-icon-btn" title="右对齐"
-                onmousedown="event.preventDefault();window.formatText&&window.formatText('justifyRight')">
-                <svg width="15" height="15" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M3 5h18v2H3zm6 4h12v2H9zm-6 4h18v2H3zm6 4h12v2H9z"/>
-                </svg>
-              </button>
-              <button class="rib-icon-btn" title="两端对齐"
-                onmousedown="event.preventDefault();window.formatText&&window.formatText('justifyFull')">
-                <svg width="15" height="15" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M3 5h18v2H3zm0 4h18v2H3zm0 4h18v2H3zm0 4h18v2H3z"/>
-                </svg>
-              </button>
+              <button class="rib-icon-btn" title="左对齐" onmousedown="event.preventDefault();window.formatText&&window.formatText('justifyLeft')"><svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><path d="M3 5h18v2H3zm0 4h12v2H3zm0 4h18v2H3zm0 4h12v2H3z"/></svg></button>
+              <button class="rib-icon-btn" title="居中" onmousedown="event.preventDefault();window.formatText&&window.formatText('justifyCenter')"><svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><path d="M3 5h18v2H3zm3 4h12v2H6zm-3 4h18v2H3zm3 4h12v2H6z"/></svg></button>
+              <button class="rib-icon-btn" title="右对齐" onmousedown="event.preventDefault();window.formatText&&window.formatText('justifyRight')"><svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><path d="M3 5h18v2H3zm6 4h12v2H9zm-6 4h18v2H3zm6 4h12v2H9z"/></svg></button>
+              <button class="rib-icon-btn" title="两端对齐" onmousedown="event.preventDefault();window.formatText&&window.formatText('justifyFull')"><svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><path d="M3 5h18v2H3zm0 4h18v2H3zm0 4h18v2H3zm0 4h18v2H3z"/></svg></button>
             </div>
-            <!-- 行2：纵向对齐（表格单元格） -->
             <div class="rib-row">
-              <button class="rib-icon-btn" title="单元格靠上对齐"
-                onmousedown="event.preventDefault();window.setVerticalAlign&&window.setVerticalAlign('top')">
-                <svg width="15" height="15" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M3 3h18v2H3zm4 4h3v13H7zm7 0h3v13h-3z"/>
-                </svg>
-              </button>
-              <button class="rib-icon-btn" title="单元格垂直居中"
-                onmousedown="event.preventDefault();window.setVerticalAlign&&window.setVerticalAlign('middle')">
-                <svg width="15" height="15" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M3 11h18v2H3zm4-6h3v5H7zm0 8h3v5H7zm7-8h3v5h-3zm0 8h3v5h-3z"/>
-                </svg>
-              </button>
-              <button class="rib-icon-btn" title="单元格靠下对齐"
-                onmousedown="event.preventDefault();window.setVerticalAlign&&window.setVerticalAlign('bottom')">
-                <svg width="15" height="15" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M3 19h18v2H3zm4-16h3v13H7zm7 0h3v13h-3z"/>
-                </svg>
-              </button>
+              <button class="rib-icon-btn" title="单元格靠上" onmousedown="event.preventDefault();window.setVerticalAlign&&window.setVerticalAlign('top')"><svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><path d="M3 3h18v2H3zm4 4h3v13H7zm7 0h3v13h-3z"/></svg></button>
+              <button class="rib-icon-btn" title="单元格居中" onmousedown="event.preventDefault();window.setVerticalAlign&&window.setVerticalAlign('middle')"><svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><path d="M3 11h18v2H3zm4-6h3v5H7zm0 8h3v5H7zm7-8h3v5h-3zm0 8h3v5h-3z"/></svg></button>
+              <button class="rib-icon-btn" title="单元格靠下" onmousedown="event.preventDefault();window.setVerticalAlign&&window.setVerticalAlign('bottom')"><svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><path d="M3 19h18v2H3zm4-16h3v13H7zm7 0h3v13h-3z"/></svg></button>
             </div>
           </div>
           <div class="rib-group-label">对齐</div>
         </div>
         <div class="rib-sep"></div>
-
-        <!-- 文档工具 -->
-        <div class="rib-group">
-          <div class="rib-group-btns">
-            <button class="rib-btn" title="自动生成目录页" onclick="window.updateTOC&&window.updateTOC()">
-              <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 10h16M4 14h10M4 18h7"/>
-              </svg>生成目录
-            </button>
-            <button class="rib-btn" title="重新编排段落序号" onclick="window.recalcParaNumbers&&window.recalcParaNumbers()">
-              <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14"/>
-              </svg>重编序号
-            </button>
-          </div>
-          <div class="rib-group-label">文档</div>
-        </div>
-        <div class="rib-sep"></div>
-
-        <!-- 草稿 + 批注 -->
+        <!-- 段落层级 -->
         <div class="rib-group rows">
           <div class="rib-group-btns">
-            <div class="rib-row">
-              <button class="rib-btn-sm" title="暂存草稿" onclick="window.saveDraft&&window.saveDraft()">
-                <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/>
-                </svg>暂存草稿
-              </button>
-            </div>
-            <div class="rib-row">
-              <button class="rib-btn-sm" title="打开草稿箱" onclick="window.openDraftModal&&window.openDraftModal()">
-                <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/>
-                </svg>草稿箱
-              </button>
-            </div>
-            <div class="rib-row">
-              <button class="rib-btn-sm" title="切换批注模式" onclick="window.toggleAnnotationMode&&window.toggleAnnotationMode()">
-                <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"/>
-                </svg>批注模式
-              </button>
+            <div class="rib-sm-col">
+              <button class="rib-btn-sm" title="设为正文" onmousedown="event.preventDefault();window.changeParaLevel&&window.changeParaLevel(window._activeBlock,0)">正文</button>
+              <button class="rib-btn-sm" title="设为二级标题" onmousedown="event.preventDefault();window.changeParaLevel&&window.changeParaLevel(window._activeBlock,2)">L2 二级</button>
+              <button class="rib-btn-sm" title="设为三级标题" onmousedown="event.preventDefault();window.changeParaLevel&&window.changeParaLevel(window._activeBlock,3)">L3 三级</button>
             </div>
           </div>
-          <div class="rib-group-label">草稿与批注</div>
+          <div class="rib-group-label">段落级别</div>
         </div>
-
       </div>
 
-      <!-- ▌插入 tab ▌ -->
+      <!-- ▌插入▌ -->
       <div class="rib-panel" data-panel="insert">
-        <!-- 段落/富文本块 -->
-        <div class="rib-group">
+        <div class="rib-group rows">
           <div class="rib-group-btns">
             <div class="rib-sm-col">
-              <button class="rib-btn-sm" title="在末尾新增段落文本块"
-                onclick="window.addGlobalBlock&&window.addGlobalBlock('para')">
-                <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7"/>
-                </svg>
-                段落文本
+              <button class="rib-btn-sm" onclick="window.appInsertBlock('para')">
+                <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7"/></svg>
+                段落文本块
               </button>
-              <button class="rib-btn-sm" title="在末尾新增富文本块（可插表格/图片）"
-                onclick="window.addGlobalBlock&&window.addGlobalBlock('rich')">
-                <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zm0 8a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zm12 0a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z"/>
-                </svg>
+              <button class="rib-btn-sm" onclick="window.appInsertBlock('rich')">
+                <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5h16v4H4zm0 6h16v4H4zm0 6h10v2H4z"/></svg>
                 富文本块
               </button>
             </div>
@@ -718,63 +599,40 @@ body { background: transparent; overflow: hidden; }
           <div class="rib-group-label">文本</div>
         </div>
         <div class="rib-sep"></div>
-        <!-- 表格 -->
-        <div class="rib-group">
+        <div class="rib-group rows">
           <div class="rib-group-btns">
             <div class="rib-sm-col">
-              <button class="rib-btn-sm" title="插入支持矩阵表（职责分配）"
-                onclick="window.addGlobalBlock&&window.addGlobalBlock('responsibility')">
-                <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M3 10h18M3 14h18M10 4v16M3 4h18v16H3z"/>
-                </svg>
-                职责表
-              </button>
-              <button class="rib-btn-sm" title="插入版本控制表"
-                onclick="window.addGlobalBlock&&window.addGlobalBlock('revision')">
-                <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
-                </svg>
-                版本表
-              </button>
-              <button class="rib-btn-sm" title="插入可编辑富文本表格"
-                onclick="window.addGlobalBlock&&window.addGlobalBlock('editable-table')">
-                <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M3 10h18M3 14h18M10 4v16M3 4h18v16H3z"/>
-                </svg>
+              <button class="rib-btn-sm" onclick="window.appInsertBlock('editable-table')">
+                <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M3 14h18M10 4v16M3 4h18v16H3z"/></svg>
                 自定义表格
+              </button>
+              <button class="rib-btn-sm" onclick="window.appInsertBlock('responsibility')">
+                <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/></svg>
+                职责矩阵表
+              </button>
+              <button class="rib-btn-sm" onclick="window.appInsertBlock('revision')">
+                <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5"/></svg>
+                版本修订表
               </button>
             </div>
           </div>
           <div class="rib-group-label">表格</div>
         </div>
         <div class="rib-sep"></div>
-        <!-- SIPOC -->
         <div class="rib-group">
           <div class="rib-group-btns">
-            <button class="rib-btn" title="在最后一页末尾插入 SIPOC 流程图"
-              onclick="window.addGlobalBlock&&window.addGlobalBlock('sipoc')">
-              <svg width="22" height="22" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                  d="M13 5l7 7-7 7M5 5l7 7-7 7"/>
-              </svg>
+            <button class="rib-btn" onclick="window.appInsertBlock('sipoc')">
+              <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 5l7 7-7 7M5 5l7 7-7 7"/></svg>
               SIPOC
             </button>
           </div>
           <div class="rib-group-label">流程图</div>
         </div>
         <div class="rib-sep"></div>
-        <!-- 图片/流程图 -->
         <div class="rib-group">
           <div class="rib-group-btns">
-            <button class="rib-btn" title="插入图片或流程截图"
-              onclick="document.getElementById('flowchart-input')&&document.getElementById('flowchart-input').click()">
-              <svg width="22" height="22" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                  d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-              </svg>
+            <button class="rib-btn" onclick="document.getElementById('flowchart-input')&&document.getElementById('flowchart-input').click()">
+              <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
               图片
             </button>
           </div>
@@ -782,51 +640,217 @@ body { background: transparent; overflow: hidden; }
         </div>
       </div>
 
-      <!-- ▌导出 tab ▌ -->
-      <div class="rib-panel" data-panel="export">
-        <!-- PDF 打印 -->
+      <!-- ▌页面▌ -->
+      <div class="rib-panel" data-panel="page">
+        <div class="rib-group rows">
+          <div class="rib-group-btns">
+            <div class="rib-sm-col">
+              <div class="rib-input-row">
+                <span class="rib-label">页眉文字：</span>
+                <input id="page-header-input" class="rib-number" style="width:160px" placeholder="公司名称等"
+                  oninput="window.appSetPageHeader(this.value)">
+              </div>
+              <div class="rib-input-row">
+                <span class="rib-label">页脚文字：</span>
+                <input id="page-footer-input" class="rib-number" style="width:160px" placeholder="版本号/日期等"
+                  oninput="window.appSetPageFooter(this.value)">
+              </div>
+            </div>
+          </div>
+          <div class="rib-group-label">页眉页脚</div>
+        </div>
+      </div>
+
+      <!-- ▌审阅▌ -->
+      <div class="rib-panel" data-panel="review">
         <div class="rib-group">
           <div class="rib-group-btns">
-            <button id="btn-pdf" class="rib-btn accent" title="打印 / 导出 PDF (Ctrl+P)">
-              <svg width="22" height="22" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                  d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/>
-              </svg>
+            <button class="rib-btn" onclick="window.updateTOC&&window.updateTOC()">
+              <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 10h16M4 14h10M4 18h7"/></svg>
+              生成目录
+            </button>
+            <button class="rib-btn" onclick="window.recalcParaNumbers&&window.recalcParaNumbers()">
+              <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14"/></svg>
+              重编序号
+            </button>
+          </div>
+          <div class="rib-group-label">文档</div>
+        </div>
+        <div class="rib-sep"></div>
+        <div class="rib-group">
+          <div class="rib-group-btns">
+            <button class="rib-btn" onclick="window.toggleAnnotationMode&&window.toggleAnnotationMode()">
+              <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"/></svg>
+              批注模式
+            </button>
+            <button class="rib-btn" onclick="window.openCommentPanel&&window.openCommentPanel()">
+              <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
+              批注面板
+            </button>
+          </div>
+          <div class="rib-group-label">批注</div>
+        </div>
+      </div>
+
+      <!-- ▌导出▌ -->
+      <div class="rib-panel" data-panel="export">
+        <div class="rib-group">
+          <div class="rib-group-btns">
+            <button id="btn-pdf" class="rib-btn" title="打印/PDF Ctrl+P">
+              <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
               打印/PDF
             </button>
           </div>
           <div class="rib-group-label">打印</div>
         </div>
         <div class="rib-sep"></div>
-        <!-- 数据导出 -->
-        <div class="rib-group">
+        <div class="rib-group rows">
           <div class="rib-group-btns">
             <div class="rib-sm-col">
-              <button id="btn-json" class="rib-btn-sm accent" title="导出 .sopx 数据备份">
-                <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
-                </svg>
+              <button id="btn-json" class="rib-btn-sm">
+                <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
                 导出 JSON 备份
               </button>
-              <button id="btn-html" class="rib-btn-sm" title="导出独立 HTML 文件（可离线浏览）">
-                <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/>
-                </svg>
+              <button id="btn-html" class="rib-btn-sm">
+                <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
                 导出独立 HTML
               </button>
-              <button class="rib-btn-sm" title="从 JSON 备份恢复数据"
-                onclick="document.getElementById('import-json-input')&&document.getElementById('import-json-input').click()">
-                <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
-                </svg>
+              <button class="rib-btn-sm" onclick="document.getElementById('import-json-input')&&document.getElementById('import-json-input').click()">
+                <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
                 导入 JSON 恢复
               </button>
             </div>
           </div>
           <div class="rib-group-label">数据</div>
+        </div>
+      </div>
+
+      <!-- ▌表格工具（上下文）▌ -->
+      <div class="rib-panel ctx-table-panel" data-panel="table-tool">
+        <div class="rib-group">
+          <div class="rib-group-btns">
+            <button class="rib-btn" onclick="window.appTableOp('addRowAbove')">
+              <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4v8m0 0l-3-3m3 3l3-3M3 14h18v7H3z"/></svg>
+              上插行
+            </button>
+            <button class="rib-btn" onclick="window.appTableOp('addRowBelow')">
+              <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 20v-8m0 0l-3 3m3-3l3 3M3 3h18v7H3z"/></svg>
+              下插行
+            </button>
+            <button class="rib-btn" onclick="window.appTableOp('delRow')" style="color:#dc2626">
+              <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 7H5m14 0l-1 12H6L5 7m5-4h4M10 3h4"/></svg>
+              删除行
+            </button>
+          </div>
+          <div class="rib-group-label">行</div>
+        </div>
+        <div class="rib-sep"></div>
+        <div class="rib-group">
+          <div class="rib-group-btns">
+            <button class="rib-btn" onclick="window.appTableOp('addColLeft')">
+              <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 12h8m0 0l-3-3m3 3l-3 3M14 3v18H21V3z"/></svg>
+              左插列
+            </button>
+            <button class="rib-btn" onclick="window.appTableOp('addColRight')">
+              <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 12h-8m0 0l3-3m-3 3l3 3M10 3v18H3V3z"/></svg>
+              右插列
+            </button>
+            <button class="rib-btn" onclick="window.appTableOp('delCol')" style="color:#dc2626">
+              <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 3h6v18H9zM5 3h4m6 0h4M5 21h4m6 0h4"/></svg>
+              删除列
+            </button>
+          </div>
+          <div class="rib-group-label">列</div>
+        </div>
+        <div class="rib-sep"></div>
+        <div class="rib-group">
+          <div class="rib-group-btns">
+            <button class="rib-btn" onclick="window.appTableOp('merge')">
+              <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 3h8v8H3zm10 0h8v8h-8zm-10 10h8v8H3zm10 0h8v8h-8z"/></svg>
+              合并单元格
+            </button>
+            <button class="rib-btn" onclick="window.appTableOp('split')">
+              <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 3v18M3 9h18M3 15h18M15 3v18"/></svg>
+              拆分单元格
+            </button>
+          </div>
+          <div class="rib-group-label">合并</div>
+        </div>
+        <div class="rib-sep"></div>
+        <div class="rib-group rows">
+          <div class="rib-group-btns">
+            <div class="rib-input-row">
+              <span class="rib-label">行高：</span>
+              <input id="tbl-row-h" class="rib-number" type="number" min="18" max="300" placeholder="px"
+                onchange="window.appTableOp('setRowHeight',this.value)">
+              <span class="rib-label">px</span>
+            </div>
+            <div class="rib-input-row">
+              <span class="rib-label">列宽：</span>
+              <input id="tbl-col-w" class="rib-number" type="number" min="30" max="600" placeholder="px"
+                onchange="window.appTableOp('setColWidth',this.value)">
+              <span class="rib-label">px</span>
+            </div>
+          </div>
+          <div class="rib-group-label">尺寸</div>
+        </div>
+      </div>
+
+      <!-- ▌SIPOC工具（上下文）▌ -->
+      <div class="rib-panel ctx-sipoc-panel" data-panel="sipoc-tool">
+        <div class="rib-group">
+          <div class="rib-group-btns">
+            <button class="rib-btn" onclick="window.appSipocOp('insertBefore')">
+              <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4v16m-8-8h16"/></svg>
+              在上方插入步骤
+            </button>
+            <button class="rib-btn" onclick="window.appSipocOp('insertAfter')">
+              <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4v16m-8-8h16"/></svg>
+              在下方插入步骤
+            </button>
+            <button class="rib-btn" onclick="window.appSipocOp('delete')" style="color:#dc2626">
+              <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 7H5m14 0l-1 12H6L5 7"/></svg>
+              删除步骤
+            </button>
+          </div>
+          <div class="rib-group-label">SIPOC 步骤</div>
+        </div>
+      </div>
+
+      <!-- ▌图片工具（上下文）▌ -->
+      <div class="rib-panel ctx-image-panel" data-panel="image-tool">
+        <div class="rib-group rows">
+          <div class="rib-group-btns">
+            <div class="rib-input-row">
+              <span class="rib-label">宽度：</span>
+              <input id="img-w" class="rib-number" type="number" min="20" placeholder="px"
+                onchange="window.appImageOp('width',this.value)">
+              <span class="rib-label">px</span>
+            </div>
+            <div class="rib-input-row">
+              <span class="rib-label">高度：</span>
+              <input id="img-h" class="rib-number" type="number" min="20" placeholder="px"
+                onchange="window.appImageOp('height',this.value)">
+              <span class="rib-label">px</span>
+            </div>
+            <div class="rib-input-row">
+              <span class="rib-label">旋转：</span>
+              <input id="img-rot" class="rib-number" type="number" min="-360" max="360" placeholder="°"
+                onchange="window.appImageOp('rotate',this.value)">
+              <span class="rib-label">°</span>
+            </div>
+          </div>
+          <div class="rib-group-label">尺寸与旋转</div>
+        </div>
+        <div class="rib-sep"></div>
+        <div class="rib-group">
+          <div class="rib-group-btns">
+            <button class="rib-btn" onclick="window.appImageOp('delete')" style="color:#dc2626">
+              <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 7H5m14 0l-1 12H6L5 7m5-4h4"/></svg>
+              删除图片
+            </button>
+          </div>
+          <div class="rib-group-label">操作</div>
         </div>
       </div>
 
