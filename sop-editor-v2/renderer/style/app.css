@@ -47,8 +47,8 @@
   /* ── 尺寸 ── */
   --qat-h:        24px;
   --tab-h:        28px;
-  --rib-body-h:   88px;
-  --ribbon-h:     140px;   /* qat + tab + body */
+  --rib-body-h:   auto;
+  --ribbon-h:     auto;
   --sidebar-w:    210px;
   --status-h:     24px;
   --radius:       4px;
@@ -71,7 +71,7 @@ html, body {
 ══════════════════════════════════════════════════════════ */
 #app {
   display: grid;
-  grid-template-rows: var(--ribbon-h) 1fr var(--status-h);
+  grid-template-rows: auto 1fr var(--status-h);
   grid-template-columns: var(--sidebar-w) 1fr;
   grid-template-areas:
     "ribbon  ribbon"
@@ -182,7 +182,7 @@ html, body {
 
 /* ── 功能区内容 ── */
 #ribbon-body {
-  flex: 1;
+  min-height: 82px;
   background: var(--bg-rib-body);
   border-top: none;
   display: flex;
@@ -385,7 +385,7 @@ html, body {
 #sidebar-toggle {
   position: fixed;
   left: calc(var(--sidebar-w) - 11px);
-  top: calc(var(--ribbon-h) + 12px);
+  top: 152px;
   width: 20px; height: 20px; border-radius: 50%;
   background: #fff; border: 1px solid var(--border);
   color: var(--text-muted); cursor: pointer; z-index: 200;

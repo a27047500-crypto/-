@@ -723,3 +723,60 @@ window.appSetPageHeader = function(text) {
 window.appSetPageFooter = function(text) {
   document.querySelectorAll('.page-footer').forEach(f => { f.textContent = text })
 }
+
+// ── 删除当前活跃块 ───────────────────────────────────────────────────────────
+window.appDeleteBlock = function() {
+  const block = window._activeBlock
+  if (!block) { toast('请先点击要删除的段落块或富文本块', 'warn'); return }
+  const selector = block.classList.contains('rich-block') ? '.rich-block' : '.para-block'
+  if (window.undoableRemove) {
+    window.undoableRemove(block, selector)
+    window._activeBlock = null
+    toast('块已删除（可撤销）', 'success')
+  } else {
+    block.remove()
+    window._activeBlock = null
+  }
+}
+
+// ── 在富文本块内插入表格或图片 ───────────────────────────────────────────────
+window.appInsertIntoRich = function(type) {
+  // 找当前活跃的富文本块
+  let rich = window._activeBlock && window._activeBlock.classList.contains('rich-block')
+    ? window._activeBlock
+    : document.querySelector('.rich-block:focus-within')
+
+  if (!rich) {
+    // 没有活跃块时，给提示
+    toast('请先点击一个富文本块，再使用此功能', 'info', 4000)
+    return
+  }
+
+  // 找富文本块内容区（contenteditable 区域）
+  const editable = rich.querySelector('[contenteditable="true"]') || rich
+
+  if (type === 'table') {
+    if (window.insertRichTable) {
+      // 原始函数需要一个按钮元素作参数，传入富文本块本身
+      window.insertRichTable(rich)
+    } else {
+      // 回退：直接插入一个简单的2x2表格 HTML
+      const tbl = `<table border="1" style="border-collapse:collapse;width:100%">
+        <tr><td style="padding:4px;border:1px solid #ccc;min-width:60px">&nbsp;</td><td style="padding:4px;border:1px solid #ccc;min-width:60px">&nbsp;</td></tr>
+        <tr><td style="padding:4px;border:1px solid #ccc">&nbsp;</td><td style="padding:4px;border:1px solid #ccc">&nbsp;</td></tr>
+      </table><br>`
+      editable.focus()
+      document.execCommand('insertHTML', false, tbl)
+    }
+    toast('表格已插入', 'success')
+  } else if (type === 'image') {
+    if (window.insertRichImage) {
+      window.insertRichImage(rich)
+    } else {
+      // 回退：触发文件选择
+      const input = document.getElementById('flowchart-input')
+      if (input) input.click()
+    }
+    toast('请选择图片文件', 'info')
+  }
+}
