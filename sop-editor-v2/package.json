@@ -17,7 +17,7 @@
     "appId": "com.haoyiyuan.sop-pro",
     "productName": "流程文件编辑器",
     "copyright": "深圳市昊一源科技有限公司",
-    "directories": { "output": "dist" },
+    "directories": { "output": "C:\\SOP-Output" },
     "files": [
       "main.js",
       "preload.js",
