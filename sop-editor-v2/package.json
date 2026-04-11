@@ -7,6 +7,7 @@
   "scripts": {
     "start": "electron .",
     "build:win": "electron-builder --win",
+    "build:win:ci": "electron-builder --win --config.directories.output=dist",
     "build:mac": "electron-builder --mac"
   },
   "devDependencies": {

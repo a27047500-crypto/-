@@ -182,7 +182,9 @@ html, body {
 
 /* ── 功能区内容 ── */
 #ribbon-body {
-  min-height: 82px;
+  height: 76px;
+  min-height: 76px;
+  max-height: 76px;
   background: var(--bg-rib-body);
   border-top: none;
   display: flex;

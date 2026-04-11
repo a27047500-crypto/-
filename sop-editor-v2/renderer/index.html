@@ -676,6 +676,30 @@ body { background: transparent; overflow: hidden; }
 
 /* ── document-wrapper 背景 ── */
 #document-wrapper { min-height: 100%; padding: 32px 0; background: #e0e0e0; }
+
+/* ── 节标题删除按钮 ── */
+.section-del-btn {
+  opacity: 0;
+  transition: opacity 0.12s ease;
+  border: none;
+  background: transparent;
+  color: #ff3b30;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 0 7px;
+  height: 1.75rem;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  margin-left: 4px;
+  font-family: -apple-system, "SF Pro Text", "Helvetica Neue", sans-serif;
+  line-height: 1;
+}
+h2.section-title:hover .section-del-btn { opacity: 1; }
+.section-del-btn:hover { background: rgba(255,59,48,0.10); }
+@media print { .section-del-btn { display: none !important; } }
 </style>
 </head>
 <body>
@@ -1315,7 +1339,7 @@ body { background: transparent; overflow: hidden; }
                     </tr>
                 </thead>
                 <tbody><tr><td class="align-top border-0">
-                    <h2 class="section-title" contenteditable="true"><span class="section-num" contenteditable="false">1</span> <span class="flex-grow ml-2">目的</span></h2>
+                    <h2 class="section-title" contenteditable="true"><span class="section-num" contenteditable="false">1</span> <span class="flex-grow ml-2">目的</span><button class="section-del-btn no-print" contenteditable="false" onclick="window.deleteSection(this)" title="删除本节">×</button></h2>
                     
                     <div class="para-block group/para flex gap-2 items-start" data-level="0">
                         <div class="para-num text-slate-800 shrink-0 hidden mt-[2px] min-w-[1.5rem]" contenteditable="false"></div>
@@ -1334,7 +1358,7 @@ body { background: transparent; overflow: hidden; }
                         </div>
                     </div>
 
-                    <h2 class="section-title" contenteditable="true"><span class="section-num" contenteditable="false">2</span> <span class="flex-grow ml-2">适用范围</span></h2>
+                    <h2 class="section-title" contenteditable="true"><span class="section-num" contenteditable="false">2</span> <span class="flex-grow ml-2">适用范围</span><button class="section-del-btn no-print" contenteditable="false" onclick="window.deleteSection(this)" title="删除本节">×</button></h2>
                     
                     <div class="para-block group/para flex gap-2 items-start" data-level="0">
                         <div class="para-num text-slate-800 shrink-0 hidden mt-[2px] min-w-[1.5rem]" contenteditable="false"></div>
@@ -1353,7 +1377,7 @@ body { background: transparent; overflow: hidden; }
                         </div>
                     </div>
 
-                    <h2 class="section-title" contenteditable="true"><span class="section-num" contenteditable="false">3</span> <span class="flex-grow ml-2">核心定义</span></h2>
+                    <h2 class="section-title" contenteditable="true"><span class="section-num" contenteditable="false">3</span> <span class="flex-grow ml-2">核心定义</span><button class="section-del-btn no-print" contenteditable="false" onclick="window.deleteSection(this)" title="删除本节">×</button></h2>
                     <div class="matrix-wrapper group/matrix">
                         <table class="premium-matrix compact-matrix">
                             <thead><tr><th class="" contenteditable="true" style="width: 24.9989%;">专业术语</th><th contenteditable="true" class="" style="width: 75.0011%;">定义与解释</th></tr></thead>
@@ -1370,7 +1394,7 @@ body { background: transparent; overflow: hidden; }
                         </div>
                     </div>
 
-                    <h2 class="section-title" contenteditable="true"><span class="section-num" contenteditable="false">4</span> <span class="flex-grow ml-2">职责分配</span></h2>
+                    <h2 class="section-title" contenteditable="true"><span class="section-num" contenteditable="false">4</span> <span class="flex-grow ml-2">职责分配</span><button class="section-del-btn no-print" contenteditable="false" onclick="window.deleteSection(this)" title="删除本节">×</button></h2>
                     <div class="matrix-wrapper group/matrix">
                         <table class="premium-matrix compact-matrix mb-0">
                             <thead><tr><th class="" contenteditable="true" style="width: 24.9989%;">责任主体</th><th contenteditable="true" class="" style="width: 75.0011%;">核心职责与权限描述</th></tr></thead>
@@ -1406,7 +1430,7 @@ body { background: transparent; overflow: hidden; }
                 </thead>
                 <tbody><tr><td class="align-top border-0">
                     <div class="flex flex-col min-h-[500px]">
-                        <h2 class="section-title" contenteditable="true"><span class="section-num" contenteditable="false">5</span> <span class="flex-grow ml-2">流程图</span></h2>
+                        <h2 class="section-title" contenteditable="true"><span class="section-num" contenteditable="false">5</span> <span class="flex-grow ml-2">流程图</span><button class="section-del-btn no-print" contenteditable="false" onclick="window.deleteSection(this)" title="删除本节">×</button></h2>
                         
                         <div class="para-block group/para flex gap-2 items-start" data-level="0">
                             <div class="para-num text-slate-800 shrink-0 hidden mt-[2px] min-w-[1.5rem]" contenteditable="false"></div>
@@ -1467,7 +1491,7 @@ body { background: transparent; overflow: hidden; }
                     </tr>
                 </thead>
                 <tbody><tr><td class="align-top border-0 relative">
-                    <h2 class="section-title" contenteditable="true"><span class="section-num" contenteditable="false">6</span> <span class="flex-grow ml-2">工作内容 (SIPOC)</span></h2>
+                    <h2 class="section-title" contenteditable="true"><span class="section-num" contenteditable="false">6</span> <span class="flex-grow ml-2">工作内容 (SIPOC)</span><button class="section-del-btn no-print" contenteditable="false" onclick="window.deleteSection(this)" title="删除本节">×</button></h2>
                     
                     <div class="flex justify-start gap-2 mt-1 mb-1 no-print items-center opacity-40 hover:opacity-100 transition-opacity">
                         <button contenteditable="false" onclick="window.insertAtStart('.sipoc-container-class', 'text')" class="text-[11px] text-slate-500 hover:text-emerald-600 font-sans leading-none font-bold">✚ 顶端插入纯文本</button>
@@ -1545,7 +1569,7 @@ body { background: transparent; overflow: hidden; }
                     </tr>
                 </thead>
                 <tbody><tr><td class="align-top border-0">
-                    <h2 class="section-title" contenteditable="true"><span class="section-num" contenteditable="false">7</span> <span class="flex-grow ml-2">相关支持性文件</span></h2>
+                    <h2 class="section-title" contenteditable="true"><span class="section-num" contenteditable="false">7</span> <span class="flex-grow ml-2">相关支持性文件</span><button class="section-del-btn no-print" contenteditable="false" onclick="window.deleteSection(this)" title="删除本节">×</button></h2>
                     <div class="matrix-wrapper group/matrix">
                         <table class="premium-matrix compact-matrix">
                             <thead><tr><th class="" contenteditable="true" style="width: 33.3326%;">文件名称</th><th class="" contenteditable="true" style="width: 24.9989%;">文件编号</th><th contenteditable="true" class="" style="width: 41.6685%;">关联说明</th></tr></thead>
@@ -1562,7 +1586,7 @@ body { background: transparent; overflow: hidden; }
                         </div>
                     </div>
                     
-                    <h2 class="section-title" contenteditable="true"><span class="section-num" contenteditable="false">8</span> <span class="flex-grow ml-2">记录存档</span></h2>
+                    <h2 class="section-title" contenteditable="true"><span class="section-num" contenteditable="false">8</span> <span class="flex-grow ml-2">记录存档</span><button class="section-del-btn no-print" contenteditable="false" onclick="window.deleteSection(this)" title="删除本节">×</button></h2>
                     <div class="matrix-wrapper group/matrix">
                         <table class="premium-matrix compact-matrix">
                             <thead><tr><th class="" contenteditable="true" style="width: 33.3326%;">记录/表单名称</th><th class="" contenteditable="true" style="width: 24.9989%;">文件编号</th><th class=" text-center" contenteditable="true" style="width: 16.6652%;">保存部门</th><th class="text-center" contenteditable="true" style="width: 25.0033%;">保存期限</th></tr></thead>
@@ -1577,7 +1601,7 @@ body { background: transparent; overflow: hidden; }
                         </div>
                     </div>
 
-                    <h2 class="section-title" contenteditable="true"><span class="section-num" contenteditable="false">9</span> <span class="flex-grow ml-2">附件</span></h2>
+                    <h2 class="section-title" contenteditable="true"><span class="section-num" contenteditable="false">9</span> <span class="flex-grow ml-2">附件</span><button class="section-del-btn no-print" contenteditable="false" onclick="window.deleteSection(this)" title="删除本节">×</button></h2>
                     <div class="matrix-wrapper group/matrix">
                         <table class="premium-matrix compact-matrix">
                             <thead><tr><th class=" text-center" contenteditable="true" style="width: 16.6652%;">序号</th><th contenteditable="true" class="" style="width: 50.0022%;">附件名称</th><th class=" text-center" contenteditable="true" style="width: 33.3326%;">备注</th></tr></thead>
@@ -2326,7 +2350,38 @@ body { background: transparent; overflow: hidden; }
             if (td && td.closest('table.visual-merge')) window.applyVisualMerge();
         });
 
+        // ── 节标题自动重新编号（1, 2, 3 …）────────────────────────────
+        window.recalcSectionNumbers = function() {
+            let count = 0;
+            document.querySelectorAll('h2.section-title').forEach(function(h2) {
+                const numSpan = h2.querySelector('.section-num');
+                if (!numSpan) return;
+                // 跳过占位节（承接上页 template，有 transparent 样式）
+                const style = numSpan.getAttribute('style') || '';
+                if (style.includes('transparent') || style.includes('width: 0')) return;
+                count++;
+                numSpan.textContent = String(count);
+            });
+        };
+
+        // ── 删除整节（h2 + 后续内容块，直到下一个 h2）────────────────
+        window.deleteSection = function(btn) {
+            const h2 = btn.closest('h2.section-title');
+            if (!h2) return;
+            const toRemove = [h2];
+            let next = h2.nextElementSibling;
+            while (next && !next.matches('h2.section-title')) {
+                toRemove.push(next);
+                next = next.nextElementSibling;
+            }
+            toRemove.forEach(function(el) { el.remove(); });
+            if (window.recalcParaNumbers) window.recalcParaNumbers();
+            if (window.markDirty) window.markDirty();
+        };
+
         window.recalcParaNumbers = function() {
+            // 先将节标题重新顺序编号
+            if (window.recalcSectionNumbers) window.recalcSectionNumbers();
             let counters = [0, 0, 0, 0, 0];
             const elements = document.querySelectorAll('h2.section-title, .para-block, .rich-block');
             elements.forEach(el => {
