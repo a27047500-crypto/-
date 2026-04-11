@@ -178,8 +178,26 @@ async function doExportHTML() {
   if (res && res.ok) toast('✅ 独立 HTML 已导出', 'success')
 }
 
-function doExportPDF() {
-  window.printPreCheck ? window.printPreCheck() : window.print()
+async function doExportPDF() {
+  // 准备文档状态（隐藏工具栏、重算分页等）
+  if (window.clearTableSelection) window.clearTableSelection()
+  if (window.recalculatePages)    window.recalculatePages()
+  if (window.recalcParaNumbers)   window.recalcParaNumbers()
+  if (window.bakeTableWidths)     window.bakeTableWidths()
+  if (window.fixFlowchartState)   window.fixFlowchartState()
+
+  if (window.sopAPI && window.sopAPI.printToPDF) {
+    toast('正在生成 PDF，请稍候…')
+    const res = await window.sopAPI.printToPDF()
+    if (res && res.ok) {
+      toast('✅ PDF 已生成，正在用系统查看器打开预览')
+    } else {
+      toast('PDF 生成失败，改用打印对话框')
+      window.print()
+    }
+  } else {
+    window.printPreCheck ? window.printPreCheck() : window.print()
+  }
 }
 
 // ── 文件打开事件（主进程发送） ────────────────────────────────────────────

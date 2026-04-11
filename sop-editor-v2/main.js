@@ -190,6 +190,24 @@ ipcMain.handle('asset:tailwind', () => {
   return null  // null = 让前端回退到 CDN
 })
 
+// ── PDF 打印预览（生成 PDF → 用系统查看器打开）────────────────────────────
+ipcMain.handle('print-to-pdf', async (event) => {
+  try {
+    const win = BrowserWindow.fromWebContents(event.sender)
+    const pdf = await win.webContents.printToPDF({
+      printBackground: true,
+      pageSize: 'A4',
+      margins: { marginType: 'printableArea' }
+    })
+    const tmpPath = path.join(app.getPath('temp'), `SOP_Preview_${Date.now()}.pdf`)
+    fs.writeFileSync(tmpPath, pdf)
+    await shell.openPath(tmpPath)
+    return { ok: true, path: tmpPath }
+  } catch (e) {
+    return { ok: false, error: e.message }
+  }
+})
+
 // ── 标记脏状态（由渲染进程调用） ──────────────────────────────────────────
 ipcMain.on('doc:dirty', (_, dirty) => {
   isDirty = dirty; updateTitle()

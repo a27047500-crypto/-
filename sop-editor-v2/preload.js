@@ -27,4 +27,7 @@ contextBridge.exposeInMainWorld('sopAPI', {
 
   // ── Tailwind CSS 离线缓存 ─────────────────────────────────
   getTailwindCSS: ()       => ipcRenderer.invoke('asset:tailwind'),
+
+  // ── PDF 打印预览 ──────────────────────────────────────────
+  printToPDF:    ()        => ipcRenderer.invoke('print-to-pdf'),
 })

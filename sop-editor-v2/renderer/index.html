@@ -213,25 +213,26 @@
         .rich-image-zone .placeholder-text { color: #94a3b8; font-size: 0.8rem; }
 
         /* ==================== 📷 图片画廊系统 ==================== */
-        .image-gallery { position: relative; margin: 0.5rem 0; border: 1px solid #e2e8f0; border-radius: 8px; background: #fafbfc; overflow: visible; }
-        .image-gallery-header { display: flex; align-items: center; justify-content: space-between; padding: 6px 10px; background: #f1f5f9; border-bottom: 1px solid #e2e8f0; font-family: sans-serif; gap: 6px; flex-wrap: wrap; }
-        .image-gallery-header .gallery-title { font-size: 11px; font-weight: 600; color: #64748b; }
+        .image-gallery { position: relative; margin: 0.5rem 0; border: 1px solid rgba(0,0,0,0.08); border-radius: 10px; background: rgba(249,249,251,0.6); overflow: visible; }
+        .image-gallery-header { display: flex; align-items: center; justify-content: space-between; padding: 5px 8px; background: rgba(249,249,251,0.97); border-bottom: 1px solid rgba(0,0,0,0.08); border-radius: 10px 10px 0 0; font-family: -apple-system, sans-serif; gap: 4px; flex-wrap: wrap; }
+        .image-gallery-header .gallery-title { font-size: 11px; font-weight: 500; color: #8e8e93; }
         .image-gallery-grid { display: flex; flex-wrap: wrap; gap: 6px; padding: 10px; align-items: flex-start; min-height: 80px; }
-        .gallery-slot { position: relative; border: 2px dashed #cbd5e1; border-radius: 6px; background: white; display: flex; align-items: center; justify-content: center; cursor: pointer; overflow: hidden; transition: border-color 0.2s; box-sizing: border-box; flex-shrink: 0; }
-        .gallery-slot:hover { border-color: #93c5fd; }
-        .gallery-slot.has-img { border-style: solid; border-color: #e2e8f0; cursor: default; }
+        .gallery-slot { position: relative; border: 1.5px dashed rgba(0,0,0,0.15); border-radius: 8px; background: rgba(255,255,255,0.8); display: flex; align-items: center; justify-content: center; cursor: pointer; overflow: hidden; transition: border-color 0.15s, background 0.15s; box-sizing: border-box; flex-shrink: 0; }
+        .gallery-slot:hover { border-color: rgba(0,122,255,0.4); background: rgba(0,122,255,0.03); }
+        .gallery-slot.has-img { border-style: solid; border-color: rgba(0,0,0,0.08); cursor: default; }
         .gallery-slot img { width: 100%; height: 100%; object-fit: contain; display: block; pointer-events: none; }
-        .gallery-slot .slot-placeholder { color: #94a3b8; font-size: 11px; font-family: sans-serif; text-align: center; padding: 8px; pointer-events: none; }
-        .gallery-slot .slot-actions { position: absolute; top: 3px; right: 3px; display: flex; gap: 2px; opacity: 0; transition: opacity 0.15s; z-index: 10; }
+        .gallery-slot .slot-placeholder { color: #aeaeb2; font-size: 11px; font-family: -apple-system, sans-serif; text-align: center; padding: 8px; pointer-events: none; }
+        .gallery-slot .slot-actions { position: absolute; top: 4px; right: 4px; display: flex; gap: 2px; opacity: 0; transition: opacity 0.12s; z-index: 10; }
         .gallery-slot:hover .slot-actions { opacity: 1; }
-        .slot-action-btn { width: 20px; height: 20px; border-radius: 4px; border: 1px solid #cbd5e1; background: white; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 10px; font-weight: bold; transition: all 0.1s; box-shadow: 0 1px 2px rgba(0,0,0,0.05); font-family: sans-serif; color: #64748b; }
-        .slot-action-btn:hover { background: #fee2e2; border-color: #fca5a5; color: #ef4444; }
-        .slot-action-btn.replace-btn:hover { background: #dbeafe; border-color: #93c5fd; color: #3b82f6; }
+        .slot-action-btn { width: 18px; height: 18px; border-radius: 5px; border: none; background: rgba(249,249,251,0.95); display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 10px; transition: all 0.10s; box-shadow: 0 1px 4px rgba(0,0,0,0.12); font-family: -apple-system, sans-serif; color: #3c3c43; }
+        .slot-action-btn:hover { background: rgba(255,59,48,0.12); color: #ff3b30; box-shadow: none; }
+        .slot-action-btn.replace-btn:hover { background: rgba(0,122,255,0.12); color: #007aff; }
         .slot-action-btn.move-btn { cursor: move; }
-        .slot-action-btn.move-btn:hover { background: #f0fdf4; border-color: #86efac; color: #22c55e; }
-        .gallery-ctrl-btn { font-size: 11px; font-weight: 600; padding: 3px 8px; border-radius: 4px; cursor: pointer; transition: all 0.1s; background: white; border: 1px solid #cbd5e1; color: #475569; font-family: sans-serif; }
-        .gallery-ctrl-btn:hover { border-color: #94a3b8; color: #2563eb; }
-        .gallery-ctrl-btn.danger:hover { background: #fef2f2; color: #ef4444; border-color: #fca5a5; }
+        .slot-action-btn.move-btn:hover { background: rgba(52,199,89,0.12); color: #34c759; }
+        .gallery-ctrl-btn { font-size: 11px; font-weight: 400; padding: 0 10px; height: 24px; border-radius: 7px; cursor: pointer; transition: background 0.10s; background: rgba(0,0,0,0.05); border: none; color: #1d1d1f; font-family: -apple-system, sans-serif; display: inline-flex; align-items: center; gap: 4px; }
+        .gallery-ctrl-btn:hover { background: rgba(0,0,0,0.09); }
+        .gallery-ctrl-btn.danger { color: #ff3b30; }
+        .gallery-ctrl-btn.danger:hover { background: rgba(255,59,48,0.10); }
         .gallery-slot .slot-resize { position: absolute; bottom: 0; right: 0; width: 16px; height: 16px; cursor: nwse-resize; opacity: 0; transition: opacity 0.15s; z-index: 10; background: linear-gradient(135deg, transparent 50%, #94a3b8 50%); border-radius: 0 0 4px 0; }
         .gallery-slot:hover .slot-resize { opacity: 0.7; }
         .gallery-slot .slot-resize:hover { opacity: 1; }
@@ -413,8 +414,8 @@ body { background: transparent; overflow: hidden; }
 /* ── 块工具条：悬停出现在块正上方（右对齐）── */
 .block-toolbar {
   position: absolute !important;
-  top: -34px !important;
-  right: 0 !important;
+  top: 4px !important;
+  right: 4px !important;
   left: auto !important;
   transform: none !important;
   flex-direction: row !important;
@@ -433,17 +434,8 @@ body { background: transparent; overflow: hidden; }
   transition: opacity 0.12s ease !important;
   z-index: 200 !important;
 }
-/* 桥接区：防止鼠标从工具条移向元素时 hover 丢失 */
-.block-toolbar::before {
-  content: '' !important;
-  position: absolute !important;
-  bottom: -10px !important;
-  top: auto !important;
-  left: -8px !important;
-  right: -8px !important;
-  width: auto !important;
-  height: 10px !important;
-}
+/* 工具条在块内部，不需要桥接 */
+.block-toolbar::before { display: none !important; }
 .group\/para:hover .block-toolbar,
 .group\/matrix:hover .block-toolbar,
 .group\/rb:hover .block-toolbar {
@@ -503,7 +495,10 @@ body { background: transparent; overflow: hidden; }
 
 /* ── 表格工具条：Excel风格横条，出现在表格正下方 ── */
 .table-controls {
-  position: static !important;
+  position: absolute !important;
+  top: calc(100% + 4px) !important;
+  left: 0 !important;
+  right: auto !important;
   transform: none !important;
   opacity: 0 !important;
   pointer-events: none !important;
@@ -513,16 +508,27 @@ body { background: transparent; overflow: hidden; }
   flex-wrap: wrap !important;
   gap: 0 !important;
   padding: 2px 4px !important;
-  margin-top: 6px !important;
+  margin-top: 0 !important;
   height: 28px !important;
   width: max-content !important;
-  max-width: 100% !important;
+  max-width: none !important;
   background: rgba(249,249,251,0.97) !important;
   border: 1px solid rgba(0,0,0,0.10) !important;
   border-radius: 10px !important;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.07) !important;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.10) !important;
 }
-.table-controls::before { display: none !important; }
+/* 桥接区：维持鼠标移入控制条时的 hover 状态 */
+.table-controls::before {
+  content: '' !important;
+  display: block !important;
+  position: absolute !important;
+  top: -8px !important;
+  bottom: auto !important;
+  left: -4px !important;
+  right: -4px !important;
+  height: 8px !important;
+  width: auto !important;
+}
 .group\/table:hover .table-controls { opacity: 1 !important; pointer-events: auto !important; }
 .table-controls > span {
   font-size: 10px !important;
